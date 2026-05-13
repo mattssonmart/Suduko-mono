@@ -1,0 +1,146 @@
+:root {
+  --accent: #38bdf8;
+  --thick-border: #475569;
+  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body.dark-mode {
+  --bg-color: #0f172a;
+  --card-bg: #1e293b;
+  --text-main: #f8fafc;
+  --border-color: #334155;
+  --cell-initial: #94a3b8;
+  --cell-user: #38bdf8;
+  --cell-bg: #1e293b;
+  --cell-bg-alt: #0f172a;
+}
+
+body.light-mode {
+  --bg-color: #f1f5f9;
+  --card-bg: #ffffff;
+  --text-main: #1e293b;
+  --border-color: #cbd5e1;
+  --cell-initial: #64748b;
+  --cell-user: #0284c7;
+  --cell-bg: #ffffff;
+  --cell-bg-alt: #e2e8f0;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  transition: background-color 0.2s;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+/* NAVIGATION MED RINGAR */
+.main-nav {
+  margin-bottom: 3rem;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.main-nav a, 
+.nav-button {
+  text-decoration: none;
+  color: var(--text-main);
+  font-family: var(--font-main);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 8px 20px;
+  border-radius: 50px; /* Skapar den runda "ring"-formen */
+  border: 2px solid var(--border-color);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-nav a:hover, 
+.nav-button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+
+.main-nav a.active {
+  border-color: var(--accent);
+  background-color: rgba(56, 189, 248, 0.1);
+  color: var(--accent);
+}
+
+/* SPELPLAN & CELLER */
+.sudoku-board {
+  display: inline-block;
+  border: 3px solid var(--thick-border);
+  background-color: var(--thick-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.sudoku-row { display: flex; }
+
+.sudoku-cell {
+  width: 55px;
+  height: 55px;
+  border: 0.5px solid var(--border-color);
+  text-align: center;
+  font-size: 1.6rem;
+  font-family: var(--font-main);
+  outline: none;
+  background-color: var(--cell-bg);
+  color: var(--cell-user);
+}
+
+.block-even { background-color: var(--cell-bg); }
+.block-odd { background-color: var(--cell-bg-alt); }
+
+.sudoku-cell.initial {
+  color: var(--cell-initial);
+  font-weight: 800;
+}
+
+.sudoku-cell:focus {
+  background-color: rgba(56, 189, 248, 0.15);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.sudoku-cell:nth-child(3n):not(:last-child) { border-right: 3px solid var(--thick-border); }
+.sudoku-row:nth-child(3n):not(:last-child) { border-bottom: 3px solid var(--thick-border); }
+
+
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.controls select, 
+.controls button {
+  height: 40px;
+  padding: 0 15px;
+  border-radius: 50px;
+  font-weight: bold;
+  font-family: var(--font-main);
+  background-color: var(--card-bg);
+  color: var(--text-main);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+}
+
+.controls button {
+  background-color: var(--accent);
+  border: none;
+  color: #0f172a;
+}

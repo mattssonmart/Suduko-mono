@@ -1,0 +1,9 @@
+{
+  "name": "@sudoku/logic",
+  "version": "1.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "publishConfig": {
+    "access": "public"
+  }
+}
