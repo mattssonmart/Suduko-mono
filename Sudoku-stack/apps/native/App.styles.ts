@@ -11,8 +11,10 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 20,
+    paddingBottom: 90, // Luft under numpad så BottomNav inte täcker den
   },
 
+  // Header
   header: {
     width: GRID_SIZE,
     flexDirection: 'row',
@@ -40,6 +42,7 @@ export const styles = StyleSheet.create({
     fontFamily: 'monospace',
   },
 
+  // Grid
   grid: {
     width: GRID_SIZE,
     height: GRID_SIZE,
@@ -77,6 +80,7 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
   },
 
+  // Cell text
   cellText: {
     fontSize: 22,
     fontWeight: '700',
@@ -93,6 +97,7 @@ export const styles = StyleSheet.create({
     color: theme.colors.accent,
   },
 
+  // Numpad
   numpad: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -121,6 +126,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
+  // Bottom nav
   bottomNav: {
     position: 'absolute',
     bottom: 0,
@@ -146,6 +152,7 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
+  // Modal
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -196,6 +203,7 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
+  // Oanvänd men behålls för bakåtkompatibilitet
   newGameButton: {
     marginTop: 30,
     backgroundColor: theme.colors.accent,
