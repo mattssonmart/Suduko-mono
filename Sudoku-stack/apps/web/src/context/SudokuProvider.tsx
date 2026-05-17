@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { Board, Difficulty, GameState, SudokuValue, HighScore } from '@sudoku/logic';
-import { createEmptyBoard, generateSolution } from '@sudoku/logic';
-import { generatePuzzle } from '@sudoku/logic';
+import { createEmptyBoard, generateSolution, generatePuzzle } from '@sudoku/logic';
 import { storage } from '../utils/storage';
 import { SudokuContext } from './SudokuContext';
 
@@ -52,13 +51,13 @@ export const SudokuProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         newBoard[row][col] = value;
 
         const isComplete = JSON.stringify(newBoard) === JSON.stringify(game.solution);
-        const updatedGame = { ...game, currentBoard: newBoard, isComplete };
+        const updatedGame: GameState = { ...game, currentBoard: newBoard, isComplete };
 
         setGame(updatedGame);
 
         if (isComplete) {
             setIsActive(false);
-            const name = prompt("Grattis! Ange ditt namn för highscore:") || "Anonym";
+            const name = prompt('Grattis! Ange ditt namn för highscore:') || 'Anonym';
             const newScore: HighScore = {
                 name,
                 time: timer,
@@ -74,7 +73,7 @@ export const SudokuProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     useEffect(() => {
         let interval: number;
         if (isActive) {
-            interval = window.setInterval(() => setTimer(t => t + 1), 1000);
+            interval = window.setInterval(() => setTimer((t: number) => t + 1), 1000);
         }
         return () => clearInterval(interval);
     }, [isActive]);

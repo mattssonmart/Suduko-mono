@@ -15,6 +15,7 @@ const SudokuBoard: React.FC = () => {
                         const blockRow = Math.floor(rowIndex / 3);
                         const blockCol = Math.floor(colIndex / 3);
                         const blockIndex = blockRow * 3 + blockCol;
+                        const isInitial = game.initialBoard[rowIndex]![colIndex] !== 0;
 
                         return (
                             <SudokuCell
@@ -22,7 +23,7 @@ const SudokuBoard: React.FC = () => {
                                 row={rowIndex}
                                 col={colIndex}
                                 value={value}
-                                isInitial={game.initialBoard[rowIndex][colIndex] !== 0}
+                                isInitial={isInitial}
                                 blockIndex={blockIndex}
                             />
                         );

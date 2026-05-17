@@ -1,6 +1,6 @@
-import type { HighScore, GameState } from "../types";
+import type { HighScore, GameState } from '@sudoku/logic';
 
-const HIGHSCORE_key = 'sudoku_highscores';
+const HIGHSCORE_KEY = 'sudoku_highscores';
 const SAVE_GAME_KEY = 'sudoku_current_game';
 
 export const storage = {
@@ -9,11 +9,11 @@ export const storage = {
         const scores = storage.getHighScores();
         scores.push(score);
         scores.sort((a, b) => a.time - b.time);
-        localStorage.setItem(HIGHSCORE_key, JSON.stringify(scores.slice(0, 10)));
+        localStorage.setItem(HIGHSCORE_KEY, JSON.stringify(scores.slice(0, 10)));
     },
 
     getHighScores: (): HighScore[] => {
-        const data = localStorage.getItem(HIGHSCORE_key);
+        const data = localStorage.getItem(HIGHSCORE_KEY);
         return data ? JSON.parse(data) : [];
     },
 
