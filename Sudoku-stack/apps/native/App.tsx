@@ -7,24 +7,18 @@ import BottomNav from './components/BottomNav';
 import DifficultyMenu from './components/DifficultyMenu';
 
 export default function App() {
-  const [game, setGame] = useState(() => {
-    const g = generateSudoku('easy');
-    return {
-      ...g,
-      board: g.board.map(row => row.map(cell => cell ?? 0)),
-      solution: g.solution.map(row => row.map(cell => cell ?? 0)),
-    };
-  });
-
-  const [playerBoard, setPlayerBoard] = useState<number[][]>(() => 
-    game.board.map(row => [...row])
-  );
+  const [game, setGame] = useState<any>(null);
+  const [playerBoard, setPlayerBoard] = useState<number[][]>([]);
   
   const [selectedCell, setSelectedCell] = useState<[number, number] | null>(null);
   const [seconds, setSeconds] = useState(0);
-  const [isActive, setIsActive] = useState(true); 
+  const [isActive, setIsActive] = useState(false); 
   const [isGameFinished, setIsGameFinished] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+
+  useEffect(() => {
+    startNewGame('easy');
+  }, []);
 
   const formatTime = (totalSeconds: number) => {
     const mins = Math.floor(totalSeconds / 60);
@@ -65,6 +59,8 @@ export default function App() {
   }, [isActive, isGameFinished]);
 
   useEffect(() => {
+    if (!game || playerBoard.length === 0) return; 
+
     const isFull = playerBoard.every(row => row.every(cell => cell !== 0));
     if (isFull && !isGameFinished) {
       const isCorrect = playerBoard.every((row, rIdx) =>
@@ -76,22 +72,22 @@ export default function App() {
         setIsActive(false); 
         
         if (Platform.OS === 'web') {
-          alert(`Snyggt! Klarat på ${formatTime(seconds)}!`);
+          setTimeout(() => alert(`Snyggt! Klarat på ${formatTime(seconds)}!`), 50);
         } else {
           Alert.alert("Snyggt!", `Klarat på ${formatTime(seconds)}!`);
         }
       } else {
         if (Platform.OS === 'web') {
-          alert("Något stämmer inte, kolla igen.");
+          setTimeout(() => alert("Något stämmer inte, kolla igen."), 50);
         } else {
           Alert.alert("Fel", "Något stämmer inte, kolla igen.");
         }
       }
     }
-  }, [playerBoard, game.solution, isGameFinished, seconds]);
+  }, [playerBoard, game, isGameFinished]); 
 
   const handleNumPress = (num: number) => {
-    if (!selectedCell || isGameFinished) return;
+    if (!selectedCell || isGameFinished || !game) return;
     const [row, col] = selectedCell;
     if (game.board[row][col] !== 0) return;
 
@@ -101,6 +97,16 @@ export default function App() {
       return next;
     });
   };
+
+  if (!game || playerBoard.length === 0) {
+    return (
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.container}>
+          <Text style={{ color: '#fff', textAlign: 'center', marginTop: 50 }}>Laddar Sudoku...</Text>
+        </SafeAreaView>
+      </SafeAreaProvider>
+    );
+  }
 
   return (
     <SafeAreaProvider>
