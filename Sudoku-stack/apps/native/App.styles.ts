@@ -25,7 +25,6 @@ export const styles = StyleSheet.create({
     fontWeight: '800',
     color: theme.colors.textMain,
   },
-
   timerContainer: {
     backgroundColor: theme.colors.card,
     paddingHorizontal: 15,
@@ -38,8 +37,9 @@ export const styles = StyleSheet.create({
     color: theme.colors.accent,
     fontSize: 20,
     fontWeight: '700',
-    fontFamily: 'monospace', 
+    fontFamily: 'monospace',
   },
+
   grid: {
     width: GRID_SIZE,
     height: GRID_SIZE,
@@ -58,14 +58,11 @@ export const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: theme.colors.border,
   },
-
   blockEven: { backgroundColor: theme.colors.cellBg },
   blockOdd: { backgroundColor: theme.colors.cellBg },
-
   cellOriginal: {
     backgroundColor: theme.colors.cellBgAlt,
   },
-
   thickRight: {
     borderRightWidth: 3,
     borderRightColor: theme.colors.thickBorder,
@@ -124,6 +121,81 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
+  bottomNav: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 70,
+    backgroundColor: theme.colors.card,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.border,
+    paddingBottom: 10,
+  },
+  navItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  navText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    marginTop: 4,
+    fontWeight: '600',
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '85%',
+    backgroundColor: '#1A1A1A',
+    borderRadius: 25,
+    padding: 25,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#333',
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginBottom: 25,
+    letterSpacing: 1,
+  },
+  menuButton: {
+    width: '100%',
+    paddingVertical: 18,
+    backgroundColor: '#2A2A2A',
+    borderRadius: 15,
+    marginVertical: 6,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  menuButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 18,
+    textTransform: 'uppercase',
+  },
+  cancelButtonText: {
+    color: '#FF4B4B',
+    marginTop: 15,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+
   newGameButton: {
     marginTop: 30,
     backgroundColor: theme.colors.accent,
@@ -142,86 +214,6 @@ export const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 1,
   },
-
-
-bottomNav: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 70,
-    backgroundColor: theme.colors.card, 
-    flexDirection: 'row', 
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: theme.colors.border,
-    paddingBottom: 10,
-  },
-  navItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  navText: {
-    color: '#FFFFFF', 
-    fontSize: 12,
-    marginTop: 4,
-    fontWeight: '600',
-  },
-
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  modalContent: {
-    width: '85%',
-    backgroundColor: '#1A1A1A', 
-    borderRadius: 25,
-    padding: 25,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#333',
-    elevation: 10, 
-    shadowColor: '#000', 
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-  },
-  modalTitle: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    marginBottom: 25,
-    letterSpacing: 1,
-  },
-
-  menuButton: {
-    width: '100%',
-    paddingVertical: 18,
-    backgroundColor: '#2A2A2A', 
-    borderRadius: 15,
-    marginVertical: 6,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#444',
-  },
-
-  menuButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-    fontSize: 18,
-    textTransform: 'uppercase', 
-  },
-  cancelButtonText: {
-    color: '#FF4B4B', 
-    marginTop: 15,
-    fontSize: 16,
-    fontWeight: '600',
-  }
-
-  });
+});
 
 export { GRID_SIZE };

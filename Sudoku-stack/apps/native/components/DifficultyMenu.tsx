@@ -2,16 +2,24 @@ import React from 'react';
 import { View, Text, Pressable, Modal } from 'react-native';
 import { styles } from '../App.styles';
 
+type Difficulty = 'easy' | 'medium' | 'hard';
+
 interface DifficultyMenuProps {
   isVisible: boolean;
   onClose: () => void;
-  onSelectDifficulty: (difficulty: 'easy' | 'medium' | 'hard') => void;
+  onSelectDifficulty: (difficulty: Difficulty) => void;
 }
+
+const DIFFICULTIES: { label: string; value: Difficulty }[] = [
+  { label: 'LÄTT', value: 'easy' },
+  { label: 'MEDEL', value: 'medium' },
+  { label: 'SVÅR', value: 'hard' },
+];
 
 const DifficultyMenu = ({ isVisible, onClose, onSelectDifficulty }: DifficultyMenuProps) => {
   return (
     <Modal
-      animationType="slide" 
+      animationType="slide"
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
@@ -19,18 +27,19 @@ const DifficultyMenu = ({ isVisible, onClose, onSelectDifficulty }: DifficultyMe
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>SVÅRIGHETSGRAD</Text>
-          
-          <Pressable style={styles.menuButton} onPress={() => onSelectDifficulty('easy')}>
-            <Text style={styles.menuButtonText}>LÄTT</Text>
-          </Pressable>
-          
-          <Pressable style={styles.menuButton} onPress={() => onSelectDifficulty('medium')}>
-            <Text style={styles.menuButtonText}>MEDEL</Text>
-          </Pressable>
-          
-          <Pressable style={styles.menuButton} onPress={() => onSelectDifficulty('hard')}>
-            <Text style={styles.menuButtonText}>SVÅR</Text>
-          </Pressable>
+
+          {DIFFICULTIES.map(({ label, value }) => (
+            <Pressable
+              key={value}
+              style={({ pressed }) => [
+                styles.menuButton,
+                pressed && { opacity: 0.7 },
+              ]}
+              onPress={() => onSelectDifficulty(value)}
+            >
+              <Text style={styles.menuButtonText}>{label}</Text>
+            </Pressable>
+          ))}
 
           <Pressable onPress={onClose}>
             <Text style={styles.cancelButtonText}>AVBRYT</Text>

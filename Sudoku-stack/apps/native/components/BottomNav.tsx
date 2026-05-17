@@ -15,12 +15,12 @@ const BottomNav = ({ onNewGamePress }: BottomNavProps) => {
         <Text style={styles.navText}>Nytt spel</Text>
       </Pressable>
 
-      <Pressable style={styles.navItem} onPress={() => console.log("Highscore")}>
+      <Pressable style={styles.navItem} onPress={() => console.log('Highscore')}>
         <Trophy color="#FFFFFF" size={24} />
         <Text style={styles.navText}>Highscore</Text>
       </Pressable>
 
-      <Pressable style={styles.navItem} onPress={() => console.log("Settings")}>
+      <Pressable style={styles.navItem} onPress={() => console.log('Settings')}>
         <Settings color="#FFFFFF" size={24} />
         <Text style={styles.navText}>Inställningar</Text>
       </Pressable>
