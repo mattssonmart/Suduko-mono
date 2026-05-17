@@ -1,34 +1,50 @@
-# Sudoku Native – Monorepo Project 
+# Sudoku Native
 
-Ett modernt Sudoku-spel byggt för Android och iOS med **React Native** och **TypeScript**. Projektet är strukturerat som ett **Turborepo** för att dela logik mellan olika plattformar.
+Ett modernt Sudoku-spel för Android och iOS byggt med **React Native**, **Expo** och **TypeScript** i en **Turborepo**-monorepo.
 
- Live Demo
-Testa appen direkt i webbläsaren eller på din mobil via Expo Go:
- [**Klicka här för att öppna Expo Snack Demo**](DIN_LÄNK_HÄR)
+🔗 [Live demo](https://suduko-mono.vercel.app/)
 
 ---
 
-## 🛠 Teknikstack
-- **Framework:** React Native (Expo)
-- **Språk:** TypeScript
-- **Arkitektur:** Turborepo (Monorepo)
-- **Ikoner:** Lucide React Native
-- **Styling:** Custom StyleSheet med mörkt tema
+## Teknikstack
 
-## 🏗 Projektstruktur
-Eftersom projektet körs i en monorepo är logiken separerad för maximal återanvändning:
-- `apps/native`: Huvudappen byggd med Expo.
-- `packages/logic`: Delad TypeScript-logik för att generera och validera Sudoku-pussel.
-- `packages/ui`: (Förberedd för) Delade UI-komponenter.
+| | |
+|---|---|
+| Framework | React Native (Expo) |
+| Språk | TypeScript |
+| Arkitektur | Turborepo (Monorepo) |
+| Ikoner | Lucide React Native |
+| Styling | Custom StyleSheet – mörkt tema |
 
-- **Generering av pussel:** Skapar unika bräden i tre svårighetsgrader (Lätt, Medel, Svår).
-- **Interaktiv spelplan:** Visuell feedback för valda celler och fasta siffror.
-- **Timer:** Håller koll på hur snabbt du löser pusslet.
-- **Modern Navigation:** Anpassad bottenmeny och popup-modaler för svårighetsgrad.
-- **Dark Mode:** Ett genomgående mörkt och stilrent användargränssnitt.
+---
 
-## Kom igång lokalt
+## Projektstruktur
 
-1. Klona repot:
-   ```sh
-   git clone [https://github.com/mattssonmart/Suduko-mono.git]
+```
+apps/
+  native/       # Expo-appen
+packages/
+  logic/        # Delad logik för generering och validering av pussel
+  ui/           # Delade UI-komponenter (förberedd)
+```
+
+---
+
+## Funktioner
+
+- Tre svårighetsgrader – Lätt, Medel, Svår
+- Interaktiv spelplan med visuell feedback
+- Timer
+- Bottenmeny och svårighetsväljare
+- Mörkt tema
+
+---
+
+## Kom igång
+
+```sh
+git clone https://github.com/mattssonmart/Suduko-mono.git
+cd Suduko-mono
+npm install
+npm run dev
+```
