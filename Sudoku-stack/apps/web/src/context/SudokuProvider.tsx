@@ -45,10 +45,10 @@ export const SudokuProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     };
 
     const updateCell = (row: number, col: number, value: SudokuValue) => {
-        if (!game || game.isComplete || game.initialBoard[row][col] !== 0) return;
+        if (!game || game.isComplete || game.initialBoard[row]![col] !== 0) return;
 
         const newBoard = game.currentBoard.map(r => [...r]) as Board;
-        newBoard[row][col] = value;
+        newBoard[row]![col] = value;
 
         const isComplete = JSON.stringify(newBoard) === JSON.stringify(game.solution);
         const updatedGame: GameState = { ...game, currentBoard: newBoard, isComplete };

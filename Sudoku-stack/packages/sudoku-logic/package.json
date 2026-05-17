@@ -1,9 +1,14 @@
 {
-  "name": "@sudoku/logic",
-  "version": "1.0.0",
-  "main": "./index.ts",
-  "types": "./index.ts",
-  "publishConfig": {
-    "access": "public"
-  }
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": false,
+    "skipLibCheck": true,
+    "declaration": true,
+    "esModuleInterop": true
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules"]
 }

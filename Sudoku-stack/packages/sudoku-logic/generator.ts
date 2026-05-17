@@ -10,7 +10,6 @@ export function shuffle<T>(array: T[]): T[] {
     const newArray = [...array];
     for (let i = newArray.length - 1; i > 0; i--) {
         const k = Math.floor(Math.random() * (i + 1));
-        // Använd temporär variabel för att undvika T | undefined
         const temp = newArray[i] as T;
         newArray[i] = newArray[k] as T;
         newArray[k] = temp;
@@ -22,12 +21,12 @@ export function shuffle<T>(array: T[]): T[] {
 export function boardIsValid(board: Board, row: number, col: number, num: number): boolean {
     // Kolla raden
     for (let i = 0; i < 9; i++) {
-        if (board[row][i] === num) return false;
+        if (board[row]![i] === num) return false;
     }
 
     // Kolla kolumnen
     for (let i = 0; i < 9; i++) {
-        if (board[i][col] === num) return false;
+        if (board[i]![col] === num) return false;
     }
 
     // Kolla 3x3-rutan
@@ -36,7 +35,7 @@ export function boardIsValid(board: Board, row: number, col: number, num: number
 
     for (let i = 0; i < 3; i++) {
         for (let k = 0; k < 3; k++) {
-            if (board[boxRow + i][boxCol + k] === num) return false;
+            if (board[boxRow + i]![boxCol + k] === num) return false;
         }
     }
 
@@ -46,16 +45,16 @@ export function boardIsValid(board: Board, row: number, col: number, num: number
 export function generateSolution(board: Board): boolean {
     for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
-            if (board[row][col] === 0) {
+            if (board[row]![col] === 0) {
                 const numbers = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
                 for (const num of numbers) {
                     if (boardIsValid(board, row, col, num)) {
-                        board[row][col] = num as SudokuValue;
+                        board[row]![col] = num as SudokuValue;
                         if (generateSolution(board)) {
                             return true;
                         }
                         // Backtrack
-                        board[row][col] = 0;
+                        board[row]![col] = 0;
                     }
                 }
                 return false;
@@ -63,20 +62,4 @@ export function generateSolution(board: Board): boolean {
         }
     }
     return true;
-}
-
-export function generatePuzzle(board: Board, emptyCells: number): Board {
-    const puzzle = board.map(row => [...row]) as Board;
-    let removed = 0;
-
-    while (removed < emptyCells) {
-        const row = Math.floor(Math.random() * 9);
-        const col = Math.floor(Math.random() * 9);
-        if (puzzle[row][col] !== 0) {
-            puzzle[row][col] = 0;
-            removed++;
-        }
-    }
-
-    return puzzle;
 }
