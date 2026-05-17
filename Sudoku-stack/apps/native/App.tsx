@@ -1,94 +1,58 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { generateSudoku } from '@sudoku/logic';
-import { Text, View, StatusBar, Pressable, Alert, Platform } from 'react-native';
+import { Text, View, StatusBar, Pressable, Alert } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { styles } from './App.styles';
-import BottomNav from './components/BottomNav';
-import DifficultyMenu from './components/DifficultyMenu';
+
+function normalizeBoard(board: (number | null | undefined)[][]): number[][] {
+  return board.map(row => row.map(cell => cell ?? 0));
+}
 
 export default function App() {
-  const [game, setGame] = useState<any>(null);
-  const [playerBoard, setPlayerBoard] = useState<number[][]>([]);
-  
-  const [selectedCell, setSelectedCell] = useState<[number, number] | null>(null);
-  const [seconds, setSeconds] = useState(0);
-  const [isActive, setIsActive] = useState(false); 
-  const [isGameFinished, setIsGameFinished] = useState(false);
-  const [isMenuVisible, setIsMenuVisible] = useState(false);
-
-  useEffect(() => {
-    startNewGame('easy');
-  }, []);
-
-  const formatTime = (totalSeconds: number) => {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const startNewGame = (difficulty: 'easy' | 'medium' | 'hard') => {
-    console.log(`Startar nytt spel: ${difficulty}`);
-    const g = generateSudoku(difficulty);
-    
-    const newBoard = g.board.map(row => row.map(cell => cell ?? 0));
-    const newSolution = g.solution.map(row => row.map(cell => cell ?? 0));
-    
-    const newGameData = {
+  // Generera och normalisera spelet en gång
+  const gameRef = useRef(() => {
+    const g = generateSudoku('easy');
+    return {
       ...g,
-      board: newBoard,
-      solution: newSolution,
+      board: normalizeBoard(g.board),
+      solution: normalizeBoard(g.solution),
     };
-    
-    setGame(newGameData);
-    setPlayerBoard(newBoard.map(row => [...row])); 
-    setSeconds(0);
-    setIsActive(true);
-    setIsGameFinished(false);
-    setSelectedCell(null);
-    setIsMenuVisible(false);
-  };
+  });
+
+  const game = useMemo(() => gameRef.current(), []);
+
+  // Alla hooks deklareras alltid i samma ordning
+  const [selectedCell, setSelectedCell] = useState<[number, number] | null>(null);
+  const [playerBoard, setPlayerBoard] = useState<number[][]>(() =>
+    game.board.map(row => [...row])
+  );
 
   useEffect(() => {
-    let interval: any;
-    if (isActive && !isGameFinished) {
-      interval = setInterval(() => {
-        setSeconds(prev => prev + 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isActive, isGameFinished]);
-
-  useEffect(() => {
-    if (!game || playerBoard.length === 0) return; 
-
     const isFull = playerBoard.every(row => row.every(cell => cell !== 0));
-    if (isFull && !isGameFinished) {
-      const isCorrect = playerBoard.every((row, rIdx) =>
-        row.every((cell, cIdx) => cell === game.solution[rIdx][cIdx])
-      );
+    if (!isFull) return;
 
-      if (isCorrect) {
-        setIsGameFinished(true);
-        setIsActive(false); 
-        
-        if (Platform.OS === 'web') {
-          setTimeout(() => alert(`Snyggt! Klarat på ${formatTime(seconds)}!`), 50);
-        } else {
-          Alert.alert("Snyggt!", `Klarat på ${formatTime(seconds)}!`);
-        }
-      } else {
-        if (Platform.OS === 'web') {
-          setTimeout(() => alert("Något stämmer inte, kolla igen."), 50);
-        } else {
-          Alert.alert("Fel", "Något stämmer inte, kolla igen.");
-        }
-      }
+    const isCorrect = playerBoard.every((row, rIdx) =>
+      row.every((cell, cIdx) => cell === game.solution[rIdx][cIdx])
+    );
+
+    if (isCorrect) {
+      Alert.alert(
+        'Snyggt jobbat!',
+        'Du klarade pusslet utan att darra på manschetten!',
+        [{ text: 'Tack!' }]
+      );
+    } else {
+      Alert.alert(
+        'Nära men skjuter ingen hare',
+        'Något blev fel på vägen. Kolla siffrorna igen!'
+      );
     }
-  }, [playerBoard, game, isGameFinished]); 
+  }, [playerBoard, game.solution]);
 
   const handleNumPress = (num: number) => {
-    if (!selectedCell || isGameFinished || !game) return;
+    if (!selectedCell) return;
     const [row, col] = selectedCell;
+
     if (game.board[row][col] !== 0) return;
 
     setPlayerBoard(prev => {
@@ -98,55 +62,45 @@ export default function App() {
     });
   };
 
-  if (!game || playerBoard.length === 0) {
-    return (
-      <SafeAreaProvider>
-        <SafeAreaView style={styles.container}>
-          <Text style={{ color: '#fff', textAlign: 'center', marginTop: 50 }}>Laddar Sudoku...</Text>
-        </SafeAreaView>
-      </SafeAreaProvider>
-    );
-  }
-
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        {Platform.OS !== 'web' && <StatusBar barStyle="light-content" />}
-        
-        <View style={styles.header}>
-          <Text style={styles.title}>Sudoku Native</Text>
-          <View style={styles.timerContainer}>
-            <Text style={styles.timerText}>{formatTime(seconds)}</Text>
-          </View>
-        </View>
+        <StatusBar barStyle="light-content" />
+        <Text style={styles.title}>Sudoku Native</Text>
 
-        <View style={[styles.grid, isGameFinished && { opacity: 0.7 }]}>
+        <View style={styles.grid}>
           {playerBoard.map((row, rowIndex) => (
             <View key={`row-${rowIndex}`} style={styles.row}>
               {row.map((cell, colIndex) => {
-                const isSelected = selectedCell?.[0] === rowIndex && selectedCell?.[1] === colIndex;
-                const isOriginal = game.board[rowIndex][colIndex] !== 0;
+                const blockRow = Math.floor(rowIndex / 3);
+                const blockCol = Math.floor(colIndex / 3);
+                const isEvenBlock = (blockRow + blockCol) % 2 === 0;
                 const isRightEdge = (colIndex + 1) % 3 === 0 && colIndex < 8;
                 const isBottomEdge = (rowIndex + 1) % 3 === 0 && rowIndex < 8;
+                const isSelected =
+                  selectedCell?.[0] === rowIndex && selectedCell?.[1] === colIndex;
+                const isOriginal = game.board[rowIndex][colIndex] !== 0;
 
                 return (
                   <Pressable
                     key={`cell-${rowIndex}-${colIndex}`}
-                    onPress={() => !isGameFinished && setSelectedCell([rowIndex, colIndex])}
+                    onPress={() => setSelectedCell([rowIndex, colIndex])}
                     style={[
                       styles.cell,
-                      (Math.floor(rowIndex / 3) + Math.floor(colIndex / 3)) % 2 === 0 ? styles.blockEven : styles.blockOdd,
+                      isEvenBlock ? styles.blockEven : styles.blockOdd,
                       isOriginal && styles.cellOriginal,
-                      isSelected && styles.selectedCell,
                       isRightEdge && styles.thickRight,
                       isBottomEdge && styles.thickBottom,
+                      isSelected && styles.selectedCell,
                     ]}
                   >
-                    <Text style={[
-                      styles.cellText,
-                      isOriginal ? styles.cellTextOriginal : styles.cellTextPlayer,
-                      isSelected && styles.selectedText
-                    ]}>
+                    <Text
+                      style={[
+                        styles.cellText,
+                        isOriginal ? styles.cellTextOriginal : styles.cellTextPlayer,
+                        isSelected && styles.selectedText,
+                      ]}
+                    >
                       {cell !== 0 ? cell : ''}
                     </Text>
                   </Pressable>
@@ -156,23 +110,20 @@ export default function App() {
           ))}
         </View>
 
-        {/* NUMPAD */}
-        <View style={[styles.numpad, isGameFinished && { opacity: 0.3 }]}>
+        <View style={styles.numpad}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-            <Pressable key={num} style={styles.numButton} onPress={() => handleNumPress(num)}>
+            <Pressable
+              key={num}
+              style={({ pressed }) => [
+                styles.numButton,
+                pressed && styles.numButtonPressed,
+              ]}
+              onPress={() => handleNumPress(num)}
+            >
               <Text style={styles.numButtonText}>{num}</Text>
             </Pressable>
           ))}
         </View>
-
-        <BottomNav onNewGamePress={() => setIsMenuVisible(true)} />
-
-        <DifficultyMenu 
-          isVisible={isMenuVisible} 
-          onClose={() => setIsMenuVisible(false)}
-          onSelectDifficulty={startNewGame}
-        />
-
       </SafeAreaView>
     </SafeAreaProvider>
   );
