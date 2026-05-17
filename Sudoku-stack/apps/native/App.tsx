@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { generateSudoku } from '@sudoku/logic';
-import { Text, View, StatusBar, Pressable, Alert } from 'react-native';
+import { Text, View, StatusBar, Pressable, Alert, Platform } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { styles } from './App.styles';
 import BottomNav from './components/BottomNav';
@@ -25,6 +25,12 @@ export default function App() {
   const [isActive, setIsActive] = useState(true); 
   const [isGameFinished, setIsGameFinished] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+
+  const formatTime = (totalSeconds: number) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const startNewGame = (difficulty: 'easy' | 'medium' | 'hard') => {
     console.log(`Startar nytt spel: ${difficulty}`);
@@ -58,12 +64,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, [isActive, isGameFinished]);
 
-  const formatTime = (totalSeconds: number) => {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
   useEffect(() => {
     const isFull = playerBoard.every(row => row.every(cell => cell !== 0));
     if (isFull && !isGameFinished) {
@@ -74,12 +74,21 @@ export default function App() {
       if (isCorrect) {
         setIsGameFinished(true);
         setIsActive(false); 
-        Alert.alert("Snyggt!", `Klarat på ${formatTime(seconds)}!`);
+        
+        if (Platform.OS === 'web') {
+          alert(`Snyggt! Klarat på ${formatTime(seconds)}!`);
+        } else {
+          Alert.alert("Snyggt!", `Klarat på ${formatTime(seconds)}!`);
+        }
       } else {
-        Alert.alert("Fel", "Något stämmer inte, kolla igen.");
+        if (Platform.OS === 'web') {
+          alert("Något stämmer inte, kolla igen.");
+        } else {
+          Alert.alert("Fel", "Något stämmer inte, kolla igen.");
+        }
       }
     }
-  }, [playerBoard, game.solution]);
+  }, [playerBoard, game.solution, isGameFinished, seconds]);
 
   const handleNumPress = (num: number) => {
     if (!selectedCell || isGameFinished) return;
@@ -96,7 +105,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        {Platform.OS !== 'web' && <StatusBar barStyle="light-content" />}
         
         <View style={styles.header}>
           <Text style={styles.title}>Sudoku Native</Text>
