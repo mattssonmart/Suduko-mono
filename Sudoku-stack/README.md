@@ -1,8 +1,18 @@
-# Sudoku Native
+# Sudoku
 
-Ett modernt Sudoku-spel för Android och iOS byggt med **React Native**, **Expo** och **TypeScript** i en **Turborepo**-monorepo.
+Ett modernt Sudoku-spel byggt med **React Native**, **React** och **TypeScript** i en **Turborepo**-monorepo. Finns tillgängligt på både mobil och dator.
 
-🔗 [Live demo](https://suduko-mono.vercel.app/)
+🔗 [Spela nu](https://suduko-mono-8k5x.vercel.app/) — automatisk redirect till rätt version baserat på din enhet
+
+---
+
+## Appar
+
+| | |
+|---|---|
+| [Mobile](https://suduko-mono.vercel.app/) | React Native (Expo) — Android & iOS |
+| [Webb](https://suduko-mono-p2gu.vercel.app/) | React — dator |
+| [Landing](https://suduko-mono-8k5x.vercel.app/) | Automatisk redirect |
 
 ---
 
@@ -10,7 +20,7 @@ Ett modernt Sudoku-spel för Android och iOS byggt med **React Native**, **Expo*
 
 | | |
 |---|---|
-| Framework | React Native (Expo) |
+| Framework | React Native (Expo) + React (Vite) |
 | Språk | TypeScript |
 | Arkitektur | Turborepo (Monorepo) |
 | Ikoner | Lucide React Native |
@@ -22,10 +32,12 @@ Ett modernt Sudoku-spel för Android och iOS byggt med **React Native**, **Expo*
 
 ```
 apps/
-  native/       # Expo-appen
+  native/     # Expo-appen (mobil)
+  web/        # React-appen (dator)
+  landing/    # Landningssida med enhetsdetektering
 packages/
-  logic/        # Delad logik för generering och validering av pussel
-  ui/           # Delade UI-komponenter (förberedd)
+  logic/      # Delad logik för generering och validering av pussel
+  ui/         # Delade UI-komponenter (förberedd)
 ```
 
 ---
@@ -37,6 +49,7 @@ packages/
 - Timer
 - Bottenmeny och svårighetsväljare
 - Mörkt tema
+- Automatisk redirect till rätt plattform
 
 ---
 
