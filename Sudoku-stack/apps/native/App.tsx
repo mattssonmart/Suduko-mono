@@ -2,31 +2,88 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { generateSudoku } from '@sudoku/logic';
 import { Text, View, StatusBar, Pressable, Alert } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from './App.styles';
 import BottomNav from './components/BottomNav';
 import DifficultyMenu from './components/DifficultyMenu';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
 
-function createGame(difficulty: Difficulty) {
+const STORAGE_KEY = 'sudoku_saved_game';
+
+interface GameData {
+  board: number[][];
+  solution: number[][];
+}
+
+interface SavedState {
+  game: GameData;
+  playerBoard: number[][];
+  difficulty: Difficulty;
+  seconds: number;
+}
+
+function createGame(difficulty: Difficulty): GameData {
   const g = generateSudoku(difficulty);
   return {
-    ...g,
     board: g.board.map(row => row.map(cell => cell ?? 0)),
     solution: g.solution.map(row => row.map(cell => cell ?? 0)),
   };
 }
 
+async function loadSaved(): Promise<SavedState | null> {
+  try {
+    const data = await AsyncStorage.getItem(STORAGE_KEY);
+    return data ? (JSON.parse(data) as SavedState) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function persist(state: SavedState) {
+  try {
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {}
+}
+
+async function clearSaved() {
+  try {
+    await AsyncStorage.removeItem(STORAGE_KEY);
+  } catch {}
+}
+
 export default function App() {
-  const [game, setGame] = useState(() => createGame('easy'));
+  const [difficulty, setDifficulty] = useState<Difficulty>('easy');
+  const [game, setGame] = useState<GameData>(() => createGame('easy'));
   const [playerBoard, setPlayerBoard] = useState<number[][]>(() =>
     game.board.map(row => [...row])
   );
   const [selectedCell, setSelectedCell] = useState<[number, number] | null>(null);
   const [seconds, setSeconds] = useState(0);
-  const [isActive, setIsActive] = useState(true);
+  const [isActive, setIsActive] = useState(false);
   const [isGameFinished, setIsGameFinished] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Ladda sparad state vid uppstart
+  useEffect(() => {
+    loadSaved().then(saved => {
+      if (saved) {
+        setGame(saved.game);
+        setPlayerBoard(saved.playerBoard);
+        setDifficulty(saved.difficulty);
+        setSeconds(saved.seconds);
+      }
+      setIsActive(true);
+      setIsLoaded(true);
+    });
+  }, []);
+
+  // Spara state automatiskt när något ändras
+  useEffect(() => {
+    if (!isLoaded || isGameFinished) return;
+    persist({ game, playerBoard, difficulty, seconds });
+  }, [playerBoard, seconds, isLoaded, isGameFinished, game, difficulty]);
 
   const formatTime = (totalSeconds: number) => {
     const mins = Math.floor(totalSeconds / 60);
@@ -34,8 +91,10 @@ export default function App() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const startNewGame = useCallback((difficulty: Difficulty) => {
-    const newGame = createGame(difficulty);
+  const startNewGame = useCallback((diff: Difficulty) => {
+    const newGame = createGame(diff);
+    clearSaved();
+    setDifficulty(diff);
     setGame(newGame);
     setPlayerBoard(newGame.board.map(row => [...row]));
     setSeconds(0);
@@ -54,7 +113,7 @@ export default function App() {
 
   // Vinstkontroll
   useEffect(() => {
-    if (isGameFinished) return;
+    if (!isLoaded || isGameFinished) return;
     const isFull = playerBoard.every(row => row.every(cell => cell !== 0));
     if (!isFull) return;
 
@@ -65,6 +124,7 @@ export default function App() {
     if (isCorrect) {
       setIsGameFinished(true);
       setIsActive(false);
+      clearSaved();
       Alert.alert('Snyggt jobbat!', `Du klarade det på ${formatTime(seconds)}!`, [
         { text: 'Nytt spel', onPress: () => setIsMenuVisible(true) },
         { text: 'Stäng' },
@@ -72,7 +132,7 @@ export default function App() {
     } else {
       Alert.alert('Nära men inte riktigt', 'Något stämmer inte, kolla igen.');
     }
-  }, [playerBoard, game.solution, isGameFinished, seconds]);
+  }, [playerBoard, game.solution, isGameFinished, isLoaded, seconds]);
 
   const handleNumPress = (num: number) => {
     if (!selectedCell || isGameFinished) return;
