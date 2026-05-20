@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { Board, Difficulty, GameState, SudokuValue, HighScore } from '@sudoku/logic';
-import { createEmptyBoard, generateSolution, generatePuzzle } from '@sudoku/logic';
+import { createEmptyBoard, generateSolution, generatePuzzle, fetchNewGame } from '@sudoku/logic';
 import { storage } from '../utils/storage';
 import { SudokuContext } from './SudokuContext';
 
@@ -21,13 +21,12 @@ export const SudokuProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         return !!(saved && !saved.isComplete);
     });
 
-    const startNewGame = (difficulty: Difficulty) => {
-        const board = createEmptyBoard();
-        generateSolution(board);
-        const solution = board.map(row => [...row]) as Board;
-
-        const emptyCells = difficulty === 'easy' ? 35 : difficulty === 'medium' ? 45 : 55;
-        const puzzle = generatePuzzle(board, emptyCells);
+    const startNewGame = async (difficulty: Difficulty) => {
+        const response = await fetchNewGame('http://localhost:5000', difficulty)
+        const puzzle = response.board;
+        const boardCopy = puzzle.map(row => [...row]);
+        generateSolution(boardCopy);
+        const solution = boardCopy as Board;
 
         const newState: GameState = {
             initialBoard: puzzle.map(row => [...row]) as Board,

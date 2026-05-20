@@ -80,7 +80,8 @@ export function generateSudoku(difficulty: 'easy' | 'medium' | 'hard' = 'easy') 
         hard: 60
     };
 
-    const puzzleBoard = generatePuzzle(fullBoard, emptyCellsMap[difficulty]);
+    const cellsToRemove = emptyCellsMap[difficulty]
+    const puzzleBoard = generatePuzzle(fullBoard, cellsToRemove);
 
     return {
         board: puzzleBoard,
