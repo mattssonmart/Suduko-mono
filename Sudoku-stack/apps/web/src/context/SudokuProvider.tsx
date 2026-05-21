@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { Board, Difficulty, GameState, SudokuValue, HighScore } from '@sudoku/logic';
-import { createEmptyBoard, generateSolution, generatePuzzle, fetchNewGame } from '@sudoku/logic';
+import { generateSolution, fetchNewGame } from '@sudoku/logic';
 import { storage } from '../utils/storage';
 import { SudokuContext } from './SudokuContext';
 

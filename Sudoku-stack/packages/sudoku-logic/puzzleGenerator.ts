@@ -70,9 +70,10 @@ export function countSolutions(board: Board): number {
     return solutions;
 }
 
-export function generateSudoku(difficulty: 'easy' | 'medium' | 'hard' = 'easy') {
+export function generateSudoku(difficulty: 'easy' | 'medium' | 'hard' = 'easy', seed?: number) {
     const fullBoard = createEmptyBoard();
-    generateSolution(fullBoard);
+    const { seed } = req.body;
+    generateSolution(fullBoard, seed);
 
     const emptyCellsMap = {
         easy: 30,
