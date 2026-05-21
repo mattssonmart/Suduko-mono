@@ -1,7 +1,7 @@
 import type { Board, SudokuValue } from './types';
 import { shuffle, boardIsValid, createEmptyBoard, generateSolution } from './generator';
 
-export function generatePuzzle(board: Board, emptyCells: number): Board {
+export function generatePuzzle(board: Board, emptyCells: number, seed?: number): Board {
     const puzzle = board.map(row => [...row]) as Board;
     let removed = 0;
     let positions: [number, number][] = [];
@@ -11,7 +11,7 @@ export function generatePuzzle(board: Board, emptyCells: number): Board {
             positions.push([row, col]);
         }
     }
-    positions = shuffle(positions);
+    positions = shuffle(positions, seed);
 
     let i = 0;
     while (removed < emptyCells && i < positions.length) {
@@ -81,7 +81,7 @@ export function generateSudoku(difficulty: 'easy' | 'medium' | 'hard' = 'easy', 
     };
 
     const cellsToRemove = emptyCellsMap[difficulty]
-    const puzzleBoard = generatePuzzle(fullBoard, cellsToRemove);
+    const puzzleBoard = generatePuzzle(fullBoard, cellsToRemove, seed);
 
     return {
         board: puzzleBoard,
